@@ -1,0 +1,99 @@
+Got you. Here’s a clean, Replit-ready app description you can paste directly and start vibe coding.
+Clear vision, no confusion, execution-focused 💼⚡
+
+App Name
+
+Expense IQ
+
+App Description (for Replit / vibe coding)
+
+Expense IQ is a smart, student-focused expense tracking web app designed to help college students understand where their money goes, why they overspend, and how to fix it.
+
+Unlike basic expense trackers that only show numbers, Expense IQ focuses on behavioral insights. It tracks daily spending, categorizes expenses automatically, identifies impulsive or unnecessary purchases, and provides simple, actionable suggestions to improve money habits.
+
+The app supports:
+
+Automatic expense input via UPI transaction history (simulated for now)
+
+Manual expense entry for cash or non-UPI payments
+
+Clean dashboards with visual charts
+
+Student-friendly insights instead of financial jargon
+
+Expense IQ is built as a web application first, optimized for both mobile and laptop screens, and can later scale to a full mobile app.
+
+Core Features
+1️⃣ Expense Input
+
+Manual entry: amount, category, note, payment type
+
+UPI-based input: auto-parsed transaction messages (regex-based simulation)
+
+2️⃣ Smart Categorization
+
+Food, Travel, Academics, Entertainment, Essentials, Misc
+
+Automatic grouping using rules and templates
+
+3️⃣ Insights & Behavior Analysis
+
+Detects impulsive spending patterns
+
+Flags unnecessary repeat expenses
+
+Highlights peak spending times (weekends, late nights, stress periods)
+
+4️⃣ Visual Dashboard
+
+Monthly expense summary
+
+Category-wise charts
+
+Spending trend graphs using Chart.js
+
+5️⃣ Practical Suggestions
+
+“You spend most on food after 9 PM”
+
+“Weekend expenses are 35% higher than weekdays”
+
+“Try setting a daily limit for snacks”
+
+Tech Stack (for Replit context)
+
+Frontend: React + Tailwind CSS
+
+Backend: Python + FastAPI
+
+Database: MongoDB
+
+Data Analysis: Pandas, NumPy
+
+ML (future-ready): Scikit-learn
+
+NLP: Regex + templates (for transaction parsing)
+
+Charts: Chart.js
+
+Target Users
+
+College students
+
+Hostel residents
+
+Students managing pocket money or stipends
+
+Design Philosophy
+
+Minimal
+
+Student-friendly
+
+Insight-driven, not number-heavy
+
+Fast and intuitive
+
+One-Line Pitch
+
+Expense IQ helps students stop overspending by turning daily expenses into clear insights and smarter habits
