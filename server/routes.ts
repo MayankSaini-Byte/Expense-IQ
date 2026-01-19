@@ -13,27 +13,35 @@ function parseUPIMessage(message: string) {
   // "Debited Rs 1200 for Netflix"
   // "Amt: 150.00, to Zomato, ref: 123..."
   
-  const amountRegex = /(?:Rs\.?|INR|Amt:)\s*([\d,]+(?:\.\d{2})?)/i;
-  const merchantRegex = /(?:to|at|paid|Ref:)\s+([a-zA-Z0-9\s]+?)(?:\s+(?:for|via|on|ref|@)|$)/i;
-  const dateRegex = /(\d{2}[-/]\d{2}[-/]\d{2,4})/;
-
+  const amountRegex = /(?:Rs\.?|INR|Amt:)\s*([\d,]+(?:\.\d{1,2})?)/i;
+  const merchantRegex = /(?:to|at|paid|Ref:)\s+([a-zA-Z0-9\s\&\-\.]+?)(?:\s+(?:for|via|on|ref|@)|$|\.|\,)/i;
+  
   const amountMatch = message.match(amountRegex);
   const merchantMatch = message.match(merchantRegex);
   
   let amount = 0;
   if (amountMatch) {
-    amount = parseFloat(amountMatch[1].replace(/,/g, ''));
+    const cleanAmount = amountMatch[1].replace(/,/g, '');
+    amount = parseFloat(cleanAmount);
   }
 
   let merchant = "Unknown";
-  if (merchantMatch) {
+  if (merchantMatch && merchantMatch[1]) {
     merchant = merchantMatch[1].trim();
-  } else {
-    // Fallback search for common merchant names if no explicit "to" found
-    const commonMerchants = ["Zomato", "Swiggy", "Uber", "Ola", "Amazon", "Flipkart", "Netflix", "Spotify"];
+  }
+  
+  // Robust fallback search for merchant names
+  const lowerMsg = message.toLowerCase();
+  const commonMerchants = [
+    "zomato", "swiggy", "uber", "ola", "amazon", "flipkart", "netflix", 
+    "spotify", "jio", "airtel", "google", "blinkit", "zepto", "starbucks", 
+    "mcdonalds", "kfc", "paytm", "phonepe"
+  ];
+  
+  if (merchant === "Unknown" || merchant.length < 2) {
     for (const m of commonMerchants) {
-      if (message.toLowerCase().includes(m.toLowerCase())) {
-        merchant = m;
+      if (lowerMsg.includes(m)) {
+        merchant = m.charAt(0).toUpperCase() + m.slice(1);
         break;
       }
     }
@@ -41,7 +49,7 @@ function parseUPIMessage(message: string) {
 
   // Auto-categorize based on keywords in merchant/message
   let category = "Misc";
-  const lowerMsg = message.toLowerCase();
+  // lowerMsg is already defined above
   
   if (lowerMsg.includes("zomato") || lowerMsg.includes("swiggy") || lowerMsg.includes("food") || lowerMsg.includes("restaurant") || lowerMsg.includes("cafe") || lowerMsg.includes("eat") || lowerMsg.includes("lunch") || lowerMsg.includes("dinner")) {
     category = "Food";

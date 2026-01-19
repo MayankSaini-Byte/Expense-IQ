@@ -62,18 +62,23 @@ export function ExpenseForm({ defaultValues, onSubmit, isLoading, submitLabel = 
     
     try {
       const result = await parseUPIMutation.mutateAsync({ message: upiMessage });
-      form.setValue("amount", result.amount);
-      form.setValue("category", result.category);
-      form.setValue("note", result.note);
-      form.setValue("date", new Date(result.date));
-      form.setValue("paymentType", "upi");
-      form.setValue("rawMessage", result.originalMessage);
+      
+      // Direct form value updates with validation and delay for stability
+      form.setValue("amount", result.amount, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      form.setValue("category", result.category, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      form.setValue("note", result.note, { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      form.setValue("date", new Date(result.date), { shouldDirty: true, shouldTouch: true, shouldValidate: true });
+      form.setValue("paymentType", "upi", { shouldDirty: true, shouldTouch: true, shouldValidate: true });
       
       toast({
         title: "Parsed Successfully",
         description: `Found ₹${result.amount} for ${result.category}`,
       });
-      setActiveTab("manual"); // Switch to manual to review
+      
+      // Explicit tab switch after state update
+      setTimeout(() => {
+        setActiveTab("manual");
+      }, 150);
     } catch (error) {
       toast({
         title: "Parsing Failed",
@@ -126,7 +131,14 @@ export function ExpenseForm({ defaultValues, onSubmit, isLoading, submitLabel = 
                     <FormControl>
                       <div className="relative">
                         <span className="absolute left-3 top-2.5 text-muted-foreground font-semibold">₹</span>
-                        <Input type="number" step="0.01" className="pl-8 text-lg font-medium" {...field} />
+                        <Input 
+                          type="number" 
+                          step="0.01" 
+                          placeholder="0.00"
+                          className="pl-8 text-lg font-medium" 
+                          {...field}
+                          onChange={(e) => field.onChange(parseFloat(e.target.value) || 0)}
+                        />
                       </div>
                     </FormControl>
                     <FormMessage />
