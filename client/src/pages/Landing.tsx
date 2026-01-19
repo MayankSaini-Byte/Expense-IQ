@@ -16,9 +16,9 @@ export default function Landing() {
             <span className="font-display font-bold text-xl tracking-tight">Expense IQ</span>
           </div>
           <div className="flex items-center gap-4">
-            <Link href="/api/login">
+            <a href="/api/login">
               <Button>Login / Sign Up</Button>
-            </Link>
+            </a>
           </div>
         </div>
       </nav>
@@ -34,11 +34,11 @@ export default function Landing() {
               Track expenses effortlessly, scan UPI screenshots, and get behavioral insights to stop impulsive spending. Built for student life.
             </p>
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-              <Link href="/api/login">
+              <a href="/api/login">
                 <Button size="lg" className="h-14 px-8 text-lg rounded-full shadow-xl shadow-primary/20 hover:shadow-2xl hover:shadow-primary/30 transition-all hover:-translate-y-1">
                   Get Started for Free <ArrowRight className="ml-2 h-5 w-5" />
                 </Button>
-              </Link>
+              </a>
             </div>
           </div>
         </div>
