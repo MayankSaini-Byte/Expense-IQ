@@ -11,15 +11,15 @@ function parseUPIMessage(message: string) {
   // "Paid Rs. 150.00 to Zomato for Food"
   // "Sent Rs 500 to Amit via UPI"
   // "Debited Rs 1200 for Netflix"
+  // "Amt: 150.00, to Zomato, ref: 123..."
   
-  const amountRegex = /(?:Rs\.?|INR)\s*([\d,]+(?:\.\d{2})?)/i;
-  const merchantRegex = /(?:to|at|paid)\s+([a-zA-Z0-9\s]+?)(?:\s+(?:for|via|on)|$)/i;
-  const dateRegex = /(\d{2}[-/]\d{2}[-/]\d{2,4})/; // Simple date matcher if present
+  const amountRegex = /(?:Rs\.?|INR|Amt:)\s*([\d,]+(?:\.\d{2})?)/i;
+  const merchantRegex = /(?:to|at|paid|Ref:)\s+([a-zA-Z0-9\s]+?)(?:\s+(?:for|via|on|ref|@)|$)/i;
+  const dateRegex = /(\d{2}[-/]\d{2}[-/]\d{2,4})/;
 
   const amountMatch = message.match(amountRegex);
   const merchantMatch = message.match(merchantRegex);
-  const dateMatch = message.match(dateRegex);
-
+  
   let amount = 0;
   if (amountMatch) {
     amount = parseFloat(amountMatch[1].replace(/,/g, ''));
@@ -28,30 +28,38 @@ function parseUPIMessage(message: string) {
   let merchant = "Unknown";
   if (merchantMatch) {
     merchant = merchantMatch[1].trim();
+  } else {
+    // Fallback search for common merchant names if no explicit "to" found
+    const commonMerchants = ["Zomato", "Swiggy", "Uber", "Ola", "Amazon", "Flipkart", "Netflix", "Spotify"];
+    for (const m of commonMerchants) {
+      if (message.toLowerCase().includes(m.toLowerCase())) {
+        merchant = m;
+        break;
+      }
+    }
   }
 
   // Auto-categorize based on keywords in merchant/message
   let category = "Misc";
   const lowerMsg = message.toLowerCase();
-  const lowerMerchant = merchant.toLowerCase();
-
-  if (lowerMsg.includes("zomato") || lowerMsg.includes("swiggy") || lowerMsg.includes("food") || lowerMsg.includes("restaurant") || lowerMsg.includes("cafe")) {
+  
+  if (lowerMsg.includes("zomato") || lowerMsg.includes("swiggy") || lowerMsg.includes("food") || lowerMsg.includes("restaurant") || lowerMsg.includes("cafe") || lowerMsg.includes("eat") || lowerMsg.includes("lunch") || lowerMsg.includes("dinner")) {
     category = "Food";
-  } else if (lowerMsg.includes("uber") || lowerMsg.includes("ola") || lowerMsg.includes("travel") || lowerMsg.includes("fuel") || lowerMsg.includes("petrol")) {
+  } else if (lowerMsg.includes("uber") || lowerMsg.includes("ola") || lowerMsg.includes("travel") || lowerMsg.includes("fuel") || lowerMsg.includes("petrol") || lowerMsg.includes("auto") || lowerMsg.includes("taxi")) {
     category = "Travel";
-  } else if (lowerMsg.includes("amazon") || lowerMsg.includes("flipkart") || lowerMsg.includes("shopping")) {
+  } else if (lowerMsg.includes("amazon") || lowerMsg.includes("flipkart") || lowerMsg.includes("shopping") || lowerMsg.includes("blinkit") || lowerMsg.includes("zepto") || lowerMsg.includes("grocery")) {
     category = "Essentials";
-  } else if (lowerMsg.includes("netflix") || lowerMsg.includes("movie") || lowerMsg.includes("cinema") || lowerMsg.includes("spotify")) {
+  } else if (lowerMsg.includes("netflix") || lowerMsg.includes("movie") || lowerMsg.includes("cinema") || lowerMsg.includes("spotify") || lowerMsg.includes("game") || lowerMsg.includes("prime")) {
     category = "Entertainment";
-  } else if (lowerMsg.includes("fees") || lowerMsg.includes("books") || lowerMsg.includes("course")) {
+  } else if (lowerMsg.includes("fees") || lowerMsg.includes("books") || lowerMsg.includes("course") || lowerMsg.includes("exam") || lowerMsg.includes("library")) {
     category = "Academics";
   }
 
   return {
     amount,
     category,
-    note: `Paid to ${merchant}`,
-    date: new Date().toISOString(), // Default to now if not found
+    note: merchant !== "Unknown" ? `Paid to ${merchant}` : "UPI Payment",
+    date: new Date().toISOString(),
     originalMessage: message
   };
 }

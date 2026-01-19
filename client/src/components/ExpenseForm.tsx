@@ -141,7 +141,11 @@ export function ExpenseForm({ defaultValues, onSubmit, isLoading, submitLabel = 
                   render={({ field }) => (
                     <FormItem>
                       <FormLabel>Category</FormLabel>
-                      <Select onValueChange={field.onChange} defaultValue={field.value}>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        value={field.value}
+                        defaultValue={field.value}
+                      >
                         <FormControl>
                           <SelectTrigger>
                             <SelectValue placeholder="Select category" />
@@ -160,22 +164,48 @@ export function ExpenseForm({ defaultValues, onSubmit, isLoading, submitLabel = 
 
                 <FormField
                   control={form.control}
-                  name="date"
+                  name="paymentType"
                   render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Date</FormLabel>
-                      <FormControl>
-                        <Input 
-                          type="datetime-local" 
-                          value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
-                          onChange={(e) => field.onChange(new Date(e.target.value))}
-                        />
-                      </FormControl>
+                      <FormLabel>Payment Type</FormLabel>
+                      <Select 
+                        onValueChange={field.onChange} 
+                        value={field.value || "manual"}
+                        defaultValue={field.value || "manual"}
+                      >
+                        <FormControl>
+                          <SelectTrigger>
+                            <SelectValue placeholder="Select type" />
+                          </SelectTrigger>
+                        </FormControl>
+                        <SelectContent>
+                          <SelectItem value="manual">Manual / Cash</SelectItem>
+                          <SelectItem value="upi">UPI / Online</SelectItem>
+                        </SelectContent>
+                      </Select>
                       <FormMessage />
                     </FormItem>
                   )}
                 />
               </div>
+
+              <FormField
+                control={form.control}
+                name="date"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel>Date</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="datetime-local" 
+                        value={field.value ? new Date(field.value).toISOString().slice(0, 16) : ""}
+                        onChange={(e) => field.onChange(new Date(e.target.value))}
+                      />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
               <FormField
                 control={form.control}
