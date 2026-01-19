@@ -1,5 +1,13 @@
 import { z } from 'zod';
-import { insertExpenseSchema, expenses } from './schema';
+import { 
+  insertExpenseSchema, 
+  expenses, 
+  type CreateExpenseRequest, 
+  type UpdateExpenseRequest, 
+  type UPIParseRequest 
+} from './schema';
+
+export type { CreateExpenseRequest, UpdateExpenseRequest, UPIParseRequest };
 
 export const errorSchemas = {
   validation: z.object({

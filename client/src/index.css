@@ -5,17 +5,17 @@
 @tailwind utilities;
 
 :root {
-  /* Brand Colors - Vibrant Violet & Student Friendly */
-  --primary: 262 83% 58%;
+  /* Brand Colors - Emerald Green (Student Friendly & Professional) */
+  --primary: 158 64% 45%;
   --primary-foreground: 210 40% 98%;
   
-  --secondary: 32 95% 60%;
-  --secondary-foreground: 262 83% 58%;
+  --secondary: 158 64% 95%;
+  --secondary-foreground: 158 64% 45%;
   
-  --accent: 190 90% 50%;
-  --accent-foreground: 222 47% 11%;
+  --accent: 158 64% 35%;
+  --accent-foreground: 210 40% 98%;
   
-  --background: 210 20% 98%;
+  --background: 0 0% 100%;
   --foreground: 222 47% 11%;
   
   --card: 0 0% 100%;
@@ -30,9 +30,9 @@
   --destructive: 0 84% 60%;
   --destructive-foreground: 210 40% 98%;
 
-  --border: 214 32% 91%;
-  --input: 214 32% 91%;
-  --ring: 262 83% 58%;
+  --border: 158 64% 90%;
+  --input: 158 64% 90%;
+  --ring: 158 64% 45%;
 
   --radius: 1rem;
 

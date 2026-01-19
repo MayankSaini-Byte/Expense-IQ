@@ -61,14 +61,14 @@ export interface DashboardStats {
 }
 
 // UPI Parse Request
-export interface UPIParseRequest {
+export type UPIParseRequest = {
   message: string;
-}
+};
 
-export interface UPIParseResponse {
+export type UPIParseResponse = {
   amount: number;
   category: string;
   note: string;
   date: string;
   originalMessage: string;
-}
+};
