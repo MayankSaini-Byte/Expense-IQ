@@ -1,9 +1,9 @@
 import { db } from "./db";
 import { expenses, type Expense, type InsertExpense } from "@shared/schema";
-import { eq, desc, and, sql, gte, lte } from "drizzle-orm";
+import { eq, desc, and, sql } from "drizzle-orm";
 
 export interface IStorage {
-  createExpense(expense: InsertExpense): Promise<Expense>;
+  createExpense(expense: InsertExpense & { userId: string }): Promise<Expense>;
   getExpenses(userId: string, filters?: { category?: string; startDate?: string; endDate?: string }): Promise<Expense[]>;
   getExpense(id: number): Promise<Expense | undefined>;
   updateExpense(id: number, updates: Partial<InsertExpense>): Promise<Expense>;
@@ -12,7 +12,7 @@ export interface IStorage {
 }
 
 export class DatabaseStorage implements IStorage {
-  async createExpense(insertExpense: InsertExpense): Promise<Expense> {
+  async createExpense(insertExpense: InsertExpense & { userId: string }): Promise<Expense> {
     const [expense] = await db.insert(expenses).values(insertExpense).returning();
     return expense;
   }
@@ -25,11 +25,19 @@ export class DatabaseStorage implements IStorage {
     }
     
     if (filters?.startDate) {
-      conditions.push(gte(expenses.date, new Date(filters.startDate)));
+      try {
+        conditions.push(gte(expenses.date, new Date(filters.startDate)));
+      } catch (e) {
+        console.error("Invalid startDate:", filters.startDate);
+      }
     }
     
     if (filters?.endDate) {
-      conditions.push(lte(expenses.date, new Date(filters.endDate)));
+      try {
+        conditions.push(lte(expenses.date, new Date(filters.endDate)));
+      } catch (e) {
+        console.error("Invalid endDate:", filters.endDate);
+      }
     }
 
     return await db.select()

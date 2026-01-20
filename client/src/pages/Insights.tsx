@@ -37,6 +37,9 @@ export default function Insights() {
 
   const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
 
+  const dayStats = stats.dayStats || [];
+  const paymentStats = stats.paymentStats || [];
+
   return (
     <Layout>
       <div className="mb-8">
@@ -105,14 +108,14 @@ export default function Insights() {
               </CardHeader>
               <CardContent className="h-[200px]">
                 <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={stats.dayStats}>
+                  <BarChart data={dayStats}>
                     <XAxis dataKey="day" hide />
                     <Tooltip 
                       contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                       labelStyle={{ fontWeight: 'bold' }}
                     />
                     <Bar dataKey="total" radius={[4, 4, 0, 0]}>
-                      {stats.dayStats?.map((entry, index) => (
+                      {dayStats.map((_entry: any, index: number) => (
                         <Cell key={`cell-${index}`} fill={index > 4 ? '#ef4444' : '#10b981'} fillOpacity={0.8} />
                       ))}
                     </Bar>
@@ -134,7 +137,7 @@ export default function Insights() {
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
                     <Pie
-                      data={stats.paymentStats}
+                      data={paymentStats}
                       dataKey="total"
                       nameKey="type"
                       cx="50%"
@@ -143,7 +146,7 @@ export default function Insights() {
                       outerRadius={60}
                       paddingAngle={5}
                     >
-                      {stats.paymentStats?.map((entry, index) => (
+                      {paymentStats.map((_entry: any, index: number) => (
                         <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                       ))}
                     </Pie>
@@ -151,7 +154,7 @@ export default function Insights() {
                   </PieChart>
                 </ResponsiveContainer>
                 <div className="flex justify-center gap-4 mt-2">
-                   {stats.paymentStats?.map((s, i) => (
+                   {paymentStats.map((s: any, i: number) => (
                      <div key={s.type} className="flex items-center gap-1">
                        <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
                        <span className="text-[10px] uppercase text-muted-foreground">{s.type}</span>

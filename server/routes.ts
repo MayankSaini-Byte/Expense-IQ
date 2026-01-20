@@ -109,10 +109,10 @@ export async function registerRoutes(
   app.post(api.expenses.create.path, isAuthenticated, async (req: any, res) => {
     try {
       const userId = req.user.claims.sub;
-      // Force userId from auth
-      const input = api.expenses.create.input.parse({ ...req.body, userId });
+      // Force userId from auth and parse input
+      const input = api.expenses.create.input.parse(req.body);
       
-      const expense = await storage.createExpense(input);
+      const expense = await storage.createExpense({ ...input, userId });
       res.status(201).json(expense);
     } catch (err) {
       if (err instanceof z.ZodError) {
