@@ -19,7 +19,11 @@ export const expenses = pgTable("expenses", {
   isImpulsive: boolean("is_impulsive").default(false), // Flag for insights
 });
 
-export const insertExpenseSchema = createInsertSchema(expenses).omit({ id: true, userId: true });
+export const insertExpenseSchema = createInsertSchema(expenses, {
+  amount: z.coerce.string().min(1, "Amount is required"),
+  category: z.string().min(1, "Category is required"),
+  date: z.coerce.date(),
+}).omit({ id: true, userId: true });
 
 // Base types
 export type Expense = typeof expenses.$inferSelect;
@@ -56,6 +60,8 @@ export interface DashboardStats {
   totalSpent: number;
   categoryStats: CategoryStat[];
   monthlyStats: MonthlyStat[];
+  dayStats: { day: string; total: number }[];
+  paymentStats: { type: string; total: number }[];
   recentExpenses: Expense[];
   insights: Insight[];
 }
