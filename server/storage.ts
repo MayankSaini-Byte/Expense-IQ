@@ -90,6 +90,25 @@ export class DatabaseStorage implements IStorage {
     .groupBy(sql`to_char(${expenses.date}, 'Mon')`, sql`extract(month from ${expenses.date})`)
     .orderBy(sql`extract(month from ${expenses.date})`);
 
+    // Day of week stats (New Infographic Data)
+    const dayStats = await db.select({
+      day: sql<string>`to_char(${expenses.date}, 'Day')`,
+      total: sql<number>`sum(${expenses.amount})`
+    })
+    .from(expenses)
+    .where(eq(expenses.userId, userId))
+    .groupBy(sql`to_char(${expenses.date}, 'Day')`, sql`extract(isodow from ${expenses.date})`)
+    .orderBy(sql`extract(isodow from ${expenses.date})`);
+
+    // Payment type stats (New Infographic Data)
+    const paymentStats = await db.select({
+      type: expenses.paymentType,
+      total: sql<number>`sum(${expenses.amount})`
+    })
+    .from(expenses)
+    .where(eq(expenses.userId, userId))
+    .groupBy(expenses.paymentType);
+
     // Recent expenses
     const recentExpenses = await db.select()
       .from(expenses)
@@ -120,8 +139,18 @@ export class DatabaseStorage implements IStorage {
       });
     }
 
-    // 3. Weekend spending check (simple heuristic: if recent expenses were on weekend)
-    // This is hard to do with just aggregates without more complex SQL, let's skip for now or do basic checks.
+    // 3. Weekend Peak detection
+    const weekendTotal = dayStats
+      .filter(s => s.day.trim() === 'Saturday' || s.day.trim() === 'Sunday')
+      .reduce((acc, curr) => acc + Number(curr.total), 0);
+    
+    if (totalSpent > 0 && (weekendTotal / totalSpent) > 0.4) {
+      insights.push({
+        id: 'weekend-peak',
+        type: 'warning',
+        message: "You spend over 40% of your money on weekends. Watch out for impulsive leisure spending!",
+      });
+    }
 
     if (insights.length === 0) {
       insights.push({
@@ -135,6 +164,8 @@ export class DatabaseStorage implements IStorage {
       totalSpent,
       categoryStats: formattedCategoryStats,
       monthlyStats: monthlyStats.map(s => ({ month: s.month, total: Number(s.total) })),
+      dayStats: dayStats.map(s => ({ day: s.day.trim(), total: Number(s.total) })),
+      paymentStats: paymentStats.map(s => ({ type: s.type || 'manual', total: Number(s.total) })),
       recentExpenses,
       insights
     };

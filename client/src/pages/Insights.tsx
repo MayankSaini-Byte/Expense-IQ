@@ -8,10 +8,13 @@ import {
   AlertTriangle, 
   CheckCircle2, 
   Wallet,
-  ArrowRight
+  ArrowRight,
+  TrendingUp,
+  CreditCard
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
+import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, Cell, PieChart, Pie } from "recharts";
 
 export default function Insights() {
   const { data: stats, isLoading } = useStats();
@@ -32,6 +35,8 @@ export default function Insights() {
 
   if (!stats) return null;
 
+  const COLORS = ['#10b981', '#3b82f6', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+
   return (
     <Layout>
       <div className="mb-8">
@@ -42,7 +47,7 @@ export default function Insights() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
         <div className="lg:col-span-2 space-y-6">
           {/* AI Insights List */}
-          <Card className="border-none shadow-md bg-gradient-to-br from-indigo-50 to-white dark:from-slate-900 dark:to-slate-950">
+          <Card className="border-none shadow-md bg-gradient-to-br from-emerald-50/50 to-white dark:from-slate-900 dark:to-slate-950">
             <CardHeader>
               <div className="flex items-center gap-2">
                 <div className="p-2 bg-primary/10 rounded-lg">
@@ -87,6 +92,75 @@ export default function Insights() {
               )}
             </CardContent>
           </Card>
+
+          <div className="grid md:grid-cols-2 gap-6">
+            {/* Daily Spending Heatmap/Chart */}
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <TrendingUp className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-sm font-medium">Daily DNA</CardTitle>
+                </div>
+                <CardDescription>Which days do you spend most?</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={stats.dayStats}>
+                    <XAxis dataKey="day" hide />
+                    <Tooltip 
+                      contentStyle={{ borderRadius: '8px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
+                      labelStyle={{ fontWeight: 'bold' }}
+                    />
+                    <Bar dataKey="total" radius={[4, 4, 0, 0]}>
+                      {stats.dayStats?.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={index > 4 ? '#ef4444' : '#10b981'} fillOpacity={0.8} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </CardContent>
+            </Card>
+
+            {/* Payment Mode Mix */}
+            <Card className="border-none shadow-sm">
+              <CardHeader>
+                <div className="flex items-center gap-2">
+                  <CreditCard className="h-4 w-4 text-primary" />
+                  <CardTitle className="text-sm font-medium">Payment Mix</CardTitle>
+                </div>
+                <CardDescription>How do you pay?</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[200px]">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={stats.paymentStats}
+                      dataKey="total"
+                      nameKey="type"
+                      cx="50%"
+                      cy="50%"
+                      innerRadius={40}
+                      outerRadius={60}
+                      paddingAngle={5}
+                    >
+                      {stats.paymentStats?.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      ))}
+                    </Pie>
+                    <Tooltip />
+                  </PieChart>
+                </ResponsiveContainer>
+                <div className="flex justify-center gap-4 mt-2">
+                   {stats.paymentStats?.map((s, i) => (
+                     <div key={s.type} className="flex items-center gap-1">
+                       <div className="w-2 h-2 rounded-full" style={{ backgroundColor: COLORS[i % COLORS.length] }} />
+                       <span className="text-[10px] uppercase text-muted-foreground">{s.type}</span>
+                     </div>
+                   ))}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
 
           <MonthlyBarChart data={stats.monthlyStats} />
         </div>
