@@ -23,6 +23,10 @@ export const users = pgTable("users", {
   profileImageUrl: varchar("profile_image_url"),
   createdAt: timestamp("created_at").defaultNow(),
   updatedAt: timestamp("updated_at").defaultNow(),
+  // Onboarding fields
+  age: integer("age"),
+  occupation: varchar("occupation"),
+  monthlyBudget: numeric("monthly_budget"),
 });
 
 export type UpsertUser = typeof users.$inferInsert;

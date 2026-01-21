@@ -29,35 +29,19 @@ export default function Landing() {
             <p className="text-lg text-muted-foreground mb-10 leading-relaxed">
               Track expenses effortlessly, scan UPI screenshots, and get behavioral insights to stop impulsive spending. Built for student life.
             </p>
-            
-            <div className="space-y-6 max-w-sm mx-auto mb-12">
-              <div className="space-y-4">
-                <div className="relative">
-                  <Input 
-                    placeholder="Username" 
-                    className="h-14 rounded-2xl border-2 border-primary/20 focus-visible:ring-primary text-lg px-6"
-                  />
-                </div>
-                <div className="relative">
-                  <Input 
-                    type="password"
-                    placeholder="Password" 
-                    className="h-14 rounded-2xl border-2 border-primary/20 focus-visible:ring-primary text-lg px-6"
-                  />
-                </div>
-              </div>
 
+            <div className="space-y-6 max-w-sm mx-auto mb-12">
               <div className="flex flex-col gap-4">
                 <a href="/api/login">
-                  <Button size="lg" className="w-full h-14 text-xl font-bold rounded-full bg-primary hover:bg-primary/90 text-primary-foreground shadow-xl shadow-primary/20 transition-all hover:-translate-y-1">
-                    LOGIN
+                  <Button size="lg" className="w-full h-14 text-xl font-bold rounded-full bg-white text-black border border-gray-300 hover:bg-gray-50 shadow-xl shadow-primary/20 transition-all hover:-translate-y-1 flex items-center justify-center gap-3">
+                    <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" alt="Google" className="w-6 h-6" />
+                    Continue with Google
                   </Button>
                 </a>
-                
-                <div className="flex flex-col gap-2">
-                  <Button variant="ghost" className="text-primary font-medium">Forgot Password?</Button>
-                  <Button variant="ghost" className="text-primary font-medium">Sign Up</Button>
-                </div>
+
+                <p className="text-xs text-muted-foreground mt-4">
+                  By continuing, you agree to our Terms of Service and Privacy Policy.
+                </p>
               </div>
             </div>
 
